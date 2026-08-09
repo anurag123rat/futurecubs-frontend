@@ -1,65 +1,296 @@
-import Image from "next/image";
+import {
+  Brain,
+  Heart,
+  Music,
+  Palette,
+  Star,
+  Users,
+} from "lucide-react";
 
 export default function Home() {
+  const programs = [
+    {
+      title: "Tiny Explorers",
+      age: "2 - 4 Years",
+      icon: "🧸",
+    },
+    {
+      title: "Creative Cubs",
+      age: "4 - 6 Years",
+      icon: "🎨",
+    },
+    {
+      title: "Smart Learners",
+      age: "6 - 8 Years",
+      icon: "🚀",
+    },
+  ];
+
+  const activities = [
+    {
+      title: "Brain Games",
+      icon: <Brain size={40} />,
+    },
+    {
+      title: "Art & Craft",
+      icon: <Palette size={40} />,
+    },
+    {
+      title: "Music & Dance",
+      icon: <Music size={40} />,
+    },
+    {
+      title: "Life Skills",
+      icon: <Heart size={40} />,
+    },
+  ];
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <main className="bg-[#FFF9F2]">
+      {/* HERO */}
+      <section className="bg-gradient-to-r from-sky-500 to-indigo-500">
+        <div className="max-w-7xl mx-auto px-6 py-24">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            <div>
+              <span className="bg-white/20 text-white px-4 py-2 rounded-full">
+                Early Childhood Development
+              </span>
+
+              <h1 className="text-5xl md:text-7xl font-bold text-white mt-6 leading-tight">
+                Learning Through Play & Fun
+              </h1>
+
+              <p className="text-white/90 mt-6 text-lg">
+                Interactive classes, activities and brain
+                development programs designed specially
+                for toddlers and young learners.
+              </p>
+
+              <div className="flex gap-4 mt-8 flex-wrap">
+                <button className="bg-pink-500 hover:bg-pink-600 text-white px-8 py-4 rounded-full">
+                  Join Now
+                </button>
+
+                <button className="bg-white text-slate-800 px-8 py-4 rounded-full">
+                  Learn More
+                </button>
+              </div>
+            </div>
+
+            <div>
+              <img
+                src="https://images.unsplash.com/photo-1516627145497-ae6968895b74?q=80&w=1200"
+                alt=""
+                className="rounded-[40px] shadow-2xl"
+              />
+            </div>
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+      </section>
+
+      {/* FEATURES */}
+      <section className="-mt-12 relative z-10">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="grid md:grid-cols-4 gap-6">
+            <div className="bg-white p-6 rounded-3xl shadow">
+              <Brain className="text-pink-500" />
+              <h3 className="font-bold text-xl mt-4">
+                Brain Development
+              </h3>
+            </div>
+
+            <div className="bg-white p-6 rounded-3xl shadow">
+              <Heart className="text-red-500" />
+              <h3 className="font-bold text-xl mt-4">
+                Safe Environment
+              </h3>
+            </div>
+
+            <div className="bg-white p-6 rounded-3xl shadow">
+              <Users className="text-blue-500" />
+              <h3 className="font-bold text-xl mt-4">
+                Expert Teachers
+              </h3>
+            </div>
+
+            <div className="bg-white p-6 rounded-3xl shadow">
+              <Star className="text-yellow-500" />
+              <h3 className="font-bold text-xl mt-4">
+                Fun Learning
+              </h3>
+            </div>
+          </div>
         </div>
-      </main>
-    </div>
+      </section>
+
+      {/* PROGRAMS */}
+      <section className="py-24">
+        <div className="max-w-7xl mx-auto px-6">
+          <h2 className="text-center text-5xl font-bold">
+            Learning Programs
+          </h2>
+
+          <div className="grid md:grid-cols-3 gap-8 mt-16">
+            {programs.map((program) => (
+              <div
+                key={program.title}
+                className="bg-white rounded-3xl p-8 shadow hover:shadow-xl transition"
+              >
+                <div className="text-6xl">
+                  {program.icon}
+                </div>
+
+                <h3 className="text-2xl font-bold mt-6">
+                  {program.title}
+                </h3>
+
+                <p className="text-slate-500 mt-2">
+                  {program.age}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ACTIVITIES */}
+      <section className="bg-white py-24">
+        <div className="max-w-7xl mx-auto px-6">
+          <h2 className="text-center text-5xl font-bold">
+            Fun Activities
+          </h2>
+
+          <div className="grid md:grid-cols-4 gap-6 mt-16">
+            {activities.map((activity) => (
+              <div
+                key={activity.title}
+                className="text-center bg-slate-50 rounded-3xl p-8"
+              >
+                <div className="flex justify-center text-pink-500">
+                  {activity.icon}
+                </div>
+
+                <h3 className="font-bold text-xl mt-5">
+                  {activity.title}
+                </h3>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* GALLERY */}
+      <section className="py-24">
+        <div className="max-w-7xl mx-auto px-6">
+          <h2 className="text-center text-5xl font-bold">
+            Gallery
+          </h2>
+
+          <div className="grid md:grid-cols-4 gap-5 mt-16">
+            {[1, 2, 3, 4].map((item) => (
+              <img
+                key={item}
+                src={`https://picsum.photos/500/400?random=${item}`}
+                alt=""
+                className="rounded-3xl h-72 w-full object-cover"
+              />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* TESTIMONIALS */}
+      <section className="bg-white py-24">
+        <div className="max-w-7xl mx-auto px-6">
+          <h2 className="text-center text-5xl font-bold">
+            Happy Parents
+          </h2>
+
+          <div className="grid md:grid-cols-3 gap-6 mt-16">
+            {[1, 2, 3].map((item) => (
+              <div
+                key={item}
+                className="bg-slate-50 rounded-3xl p-8"
+              >
+                <p>
+                  EarlyCubs has helped my child become
+                  more confident and creative.
+                </p>
+
+                <h4 className="font-bold mt-6">
+                  Parent {item}
+                </h4>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* CTA */}
+      <section className="py-24">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="bg-gradient-to-r from-yellow-300 to-pink-300 rounded-[40px] p-12 text-center">
+            <h2 className="text-5xl font-bold">
+              Give Your Child The Best Start
+            </h2>
+
+            <button className="mt-8 bg-pink-600 text-white px-10 py-4 rounded-full">
+              Enroll Today
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* FOOTER */}
+      <footer className="bg-indigo-950 text-white py-16">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="grid md:grid-cols-4 gap-10">
+            <div>
+              <h3 className="text-3xl font-bold">
+                EarlyCubs
+              </h3>
+
+              <p className="mt-4 text-white/70">
+                Building bright futures through joyful
+                learning.
+              </p>
+            </div>
+
+            <div>
+              <h4 className="font-bold mb-4">
+                Programs
+              </h4>
+
+              <ul className="space-y-2">
+                <li>Tiny Explorers</li>
+                <li>Creative Cubs</li>
+                <li>Smart Learners</li>
+              </ul>
+            </div>
+
+            <div>
+              <h4 className="font-bold mb-4">
+                Quick Links
+              </h4>
+
+              <ul className="space-y-2">
+                <li>About</li>
+                <li>Gallery</li>
+                <li>Activities</li>
+              </ul>
+            </div>
+
+            <div>
+              <h4 className="font-bold mb-4">
+                Contact
+              </h4>
+
+              <p>info@earlycubs.com</p>
+              <p>+91 9876543210</p>
+            </div>
+          </div>
+        </div>
+      </footer>
+    </main>
   );
 }
