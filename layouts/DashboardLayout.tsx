@@ -7,6 +7,8 @@ import Sidebar from "@/components/Sidebar";
 import Header from "@/components/Header";
 import { setAccessToken } from "@/lib/axios";
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+
 export default function DashboardLayout({
   children,
   role,
@@ -21,11 +23,13 @@ export default function DashboardLayout({
     const verifyAuth = async () => {
       try {
         // Refresh cookie se naya access token lo (page refresh pe memory token chala jata hai)
+        
+
         const res = await axios.post(
-          "http://localhost:5000/api/auth/refresh",
-          {},
-          { withCredentials: true }
-        );
+        `${API_BASE_URL}/api/auth/refresh`,
+        {},
+        { withCredentials: true }
+      );
 
         setAccessToken(res.data.accessToken);
 
