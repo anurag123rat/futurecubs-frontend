@@ -1,7 +1,7 @@
 "use client";
 
 import { BarChart3, UserCheck, FileText, GraduationCap, LayoutDashboard, Users, BookOpen,
-  UserCircle,FileBarChart, CalendarCheck } from "lucide-react";
+  UserCircle,FileBarChart, CalendarCheck, X } from "lucide-react";
 import Link from "next/link";
 
 const menuConfig = {
@@ -146,7 +146,6 @@ admin: [
     { name: "Reports", icon: FileBarChart, href: "/teacher/reports" },
     { name: "Attendance", icon: CalendarCheck, href: "/teacher/attendance" },
     { name: "Profile", icon: UserCircle, href: "/teacher/profile" },
-    // { name: "Classes", icon: GraduationCap, href: "/teacher/classes" },
   ],
    parent: [
     {
@@ -179,35 +178,56 @@ admin: [
 
 export default function Sidebar({
   role,
+  isOpen = false,
+  onClose,
 }: {
   role: "superadmin" | "admin" | "teacher" | "parent";
+  isOpen?: boolean;
+  onClose?: () => void;
 }) {
   const menuItems = menuConfig[role] || [];
 
   return (
-    <aside className="w-72 min-h-screen bg-slate-900 text-white border-r border-slate-800">
-      <div className="h-20 flex items-center px-6 border-b border-slate-800">
-        <h1 className="text-2xl font-bold">
-          Future<span className="text-blue-400">Cubs</span>
-        </h1>
-      </div>
+    <>
+      {/* Mobile overlay - sirf tab dikhega jab sidebar open ho */}
+      {isOpen && (
+        <div
+          className="fixed inset-0 bg-black/50 z-40 md:hidden"
+          onClick={onClose}
+        />
+      )}
 
-      <nav className="p-4">
-        {menuItems.map((item : any) => {
-          const Icon = item.icon;
+      <aside
+        className={`fixed top-0 left-0 h-screen w-72 bg-slate-900 text-white border-r border-slate-800 z-50 transform transition-transform duration-300 ease-in-out
+         ${isOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0`}
+      >
+        <div className="h-20 flex items-center justify-between px-6 border-b border-slate-800">
+          <h1 className="text-2xl font-bold">
+            Future<span className="text-blue-400">Cubs</span>
+          </h1>
+          <button onClick={onClose} className="md:hidden text-slate-400 hover:text-white">
+            <X size={24} />
+          </button>
+        </div>
 
-          return (
-            <Link
-              key={item.name}
-              href={item.href}
-              className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-800 transition-all mb-2"
-            >
-              <Icon size={20} />
-              <span>{item.name}</span>
-            </Link>
-          );
-        })}
-      </nav>
-    </aside>
+        <nav className="p-4 overflow-y-auto h-[calc(100vh-5rem)]">
+          {menuItems.map((item: any) => {
+            const Icon = item.icon;
+
+            return (
+              <Link
+                key={item.name}
+                href={item.href}
+                onClick={onClose}
+                className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-800 transition-all mb-2"
+              >
+                <Icon size={20} />
+                <span>{item.name}</span>
+              </Link>
+            );
+          })}
+        </nav>
+      </aside>
+    </>
   );
 }
