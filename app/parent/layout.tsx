@@ -1,6 +1,7 @@
 
 
 import DashboardLayout from "@/layouts/DashboardLayout";
+import ChatWidget from "@/components/chatbot/ChatWidget";
 
 export default function ParentLayout({
   children,
@@ -10,6 +11,7 @@ export default function ParentLayout({
   return (
     <DashboardLayout role="parent">
       {children}
-    </DashboardLayout>
+      <ChatWidget />
+    </DashboardLayout>  
   );
 }

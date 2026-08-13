@@ -10,6 +10,15 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+   --color-sage: #EEF3EA;
+  --color-ink: #1E2A38;
+  --color-marigold: #E8A33D;
+  --color-teal: #4F8A80;
+  --color-rose: #D97A86;
+
+  --font-display: var(--font-display-var);
+  --font-body: var(--font-body-var);
+  --font-hand: var(--font-hand-var);
 }
 
 @media (prefers-color-scheme: dark) {

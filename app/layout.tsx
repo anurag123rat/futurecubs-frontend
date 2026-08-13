@@ -1,6 +1,11 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { Baloo_2, Inter, Caveat } from "next/font/google";
 import "./globals.css";
+
+const baloo = Baloo_2({ subsets: ["latin"], variable: "--font-display", weight: ["600", "700"] });
+const inter = Inter({ subsets: ["latin"], variable: "--font-body" });
+const caveat = Caveat({ subsets: ["latin"], variable: "--font-hand", weight: ["600"] });
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,7 +32,7 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col {`${baloo.variable} ${inter.variable} ${caveat.variable} font-sans`}">{children}</body>
     </html>
   );
 }
