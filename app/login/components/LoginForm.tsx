@@ -78,7 +78,7 @@ export default function LoginForm() {
         className="w-full max-w-md bg-white rounded-3xl shadow-lg border p-10"
       >
 
-        <h2 className="text-3xl font-bold">
+        <h2 className="text-3xl font-bold text-black">
           Login
         </h2>
 
@@ -96,7 +96,7 @@ export default function LoginForm() {
 
         <div className="mb-5">
 
-          <label className="block mb-2 font-medium">
+          <label className="block mb-2 font-medium text-black">
             Email
           </label>
 
