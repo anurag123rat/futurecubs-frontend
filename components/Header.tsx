@@ -58,7 +58,7 @@ export default function Header({ onMenuClick }: { onMenuClick?: () => void }) {
         <div className="relative" ref={menuRef}>
           <button
             onClick={() => setShowMenu(!showMenu)}
-            className="w-10 h-10 rounded-full bg-blue-500 text-white flex items-center justify-center"
+            className="w-10 h-10 -ml-4 rounded-full bg-blue-500 text-white flex items-center justify-center"
           >
             <User size={18} />
           </button>
