@@ -137,8 +137,8 @@ export default function LoginForm() {
             >
               {
                 showPassword
-                  ? <EyeOff size={20} />
-                  : <Eye size={20} />
+                  ? <EyeOff size={20} className="text-gray-700" />
+                  : <Eye size={20} className="text-gray-700" />
               }
             </button>
 
