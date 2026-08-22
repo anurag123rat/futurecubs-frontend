@@ -47,12 +47,12 @@ export default function Header({ onMenuClick }: { onMenuClick?: () => void }) {
           <input
             type="text"
             placeholder="Search..."
-            className="pl-10 pr-4 py-2 border rounded-lg outline-none"
+            className="pl-10 pr-4 py-2 border border-gray-400 text-gray-700 placeholder:text-gray-500 focus:border-gray-700 rounded-lg outline-none"
           />
         </div>
 
         <button className="relative">
-          <Bell size={22} />
+          <Bell size={22} className="text-gray-700 hover:text-gray-900" />
         </button>
 
         <div className="relative" ref={menuRef}>
