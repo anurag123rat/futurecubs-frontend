@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Baloo_2, Inter, Caveat } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 
 const baloo = Baloo_2({ subsets: ["latin"], variable: "--font-display", weight: ["600", "700"] });
@@ -32,7 +33,14 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col {`${baloo.variable} ${inter.variable} ${caveat.variable} font-sans`}">{children}</body>
+      <body className={`min-h-full flex flex-col ${baloo.variable} ${inter.variable} ${caveat.variable} font-sans`}>
+        {process.env.NODE_ENV === "development" && (
+          <Script
+            src="https://unpkg.com/react-scan/dist/auto.global.js"
+            strategy="beforeInteractive"
+          />
+        )}
+        {children}</body>
     </html>
   );
 }
