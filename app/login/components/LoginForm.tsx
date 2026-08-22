@@ -106,7 +106,7 @@ export default function LoginForm() {
             value={form.email}
             onChange={handleChange}
             placeholder="admin@futurecubs.com"
-            className="w-full border rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full border text-gray-800 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
 
         </div>
@@ -115,7 +115,7 @@ export default function LoginForm() {
 
         <div className="mb-5">
 
-          <label className="block mb-2 font-medium">
+          <label className="block mb-2 font-medium text-black">
             Password
           </label>
 
@@ -127,7 +127,7 @@ export default function LoginForm() {
               value={form.password}
               onChange={handleChange}
               placeholder="********"
-              className="w-full border rounded-xl p-3 pr-12 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full border text-gray-800 rounded-xl p-3 pr-12 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
 
             <button
