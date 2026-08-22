@@ -43,7 +43,7 @@ export default function ChatWidget() {
   };
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 font-body">
+    <div className="fixed bottom-6 right-3 z-50 font-body">
       {isOpen && (
         <div className="mb-4 flex h-[480px] sm:h-[520px] w-full max-w-[360px] flex-col overflow-hidden rounded-3xl border-2 border-ink/10 bg-sage shadow-2xl">
           {/* Header */}
