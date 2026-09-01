@@ -7,6 +7,9 @@ import {
   Users,
 } from "lucide-react";
 
+import Navbar from "@/components/webcomponents/Navbar";
+import ChatWidget from "../components/chatbot/ChatWidget";
+
 export default function Home() {
   const programs = [
     {
@@ -47,6 +50,8 @@ export default function Home() {
 
   return (
     <main className="bg-[#FFF9F2]">
+      <Navbar/>
+       <ChatWidget />
       {/* HERO */}
       <section className="bg-gradient-to-r from-sky-500 to-indigo-500">
         <div className="max-w-7xl mx-auto px-6 py-24">

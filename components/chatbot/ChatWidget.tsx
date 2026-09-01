@@ -3,6 +3,8 @@
 import { useState, useRef, useEffect } from "react";
 import axios from "@/lib/axios";
 import { MessageCircle, X, Send, PawPrint } from "lucide-react";
+import { useAuth } from "@/context/AuthContext";
+import LoginModal from "../../app/login/components/LoginModal";
 
 interface Message {
   role: "parent" | "ai";
@@ -10,7 +12,9 @@ interface Message {
 }
 
 export default function ChatWidget() {
+  const { isLoggedIn, isLoading } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
+  const [showLoginModal, setShowLoginModal] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
     { role: "ai", text: "Namaste! Main FutureCubs assistant hoon. Aapke toddler ke liye activity ideas, milestones, ya kuch bhi poochh sakte hain 🌱" },
   ]);
@@ -36,7 +40,7 @@ export default function ChatWidget() {
       const res = await axios.post("/ai/chat", { message: trimmed });
       setMessages((prev) => [...prev, { role: "ai", text: res.data.reply }]);
     } catch (err: any) {
-      setError(err?.response?.data?.error || "Kuch gadbad ho gayi. Dobara try karein.");
+      setError(err?.response?.data?.error || "An error occured try again later");
     } finally {
       setLoading(false);
     }
@@ -122,13 +126,37 @@ export default function ChatWidget() {
       )}
 
       {/* Toggle bubble */}
-      <button
+      {/* <button
         onClick={() => setIsOpen((v) => !v)}
         className="flex h-14 w-14 items-center justify-center rounded-full bg-marigold text-ink shadow-xl transition hover:scale-105"
         aria-label="Chat toggle"
       >
         {isOpen ? <X size={22} /> : <MessageCircle size={22} />}
+      </button> */}
+      <button
+        onClick={() => {
+          if (isLoading) return;
+          if (!isLoggedIn) {
+            setShowLoginModal(true);
+            return;
+          }
+          setIsOpen((v) => !v);
+        }}
+        className="flex h-14 w-14 items-center justify-center rounded-full bg-marigold text-ink shadow-xl transition hover:scale-105"
+        aria-label="Chat toggle"
+      >
+        {isOpen ? <X size={22} /> : <MessageCircle size={22} />}
       </button>
+
+        {showLoginModal && (
+        <LoginModal
+          onClose={() => setShowLoginModal(false)}
+          onSuccess={() => {
+            setShowLoginModal(false);
+            setIsOpen(true);
+          }}
+        />
+      )}
     </div>
   );
 }

@@ -5,10 +5,12 @@ import api, { setAccessToken } from "@/lib/axios";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Eye, EyeOff } from "lucide-react";
+import { useAuth } from "@/context/AuthContext";
 
-export default function LoginForm() {
+export default function LoginForm({ onSuccess }: { onSuccess?: () => void }) {
 
   const router = useRouter();
+   const { login } = useAuth();
 
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -48,8 +50,14 @@ export default function LoginForm() {
 
     const { accessToken, user } = res.data;
 
-    setAccessToken(accessToken);
-    localStorage.setItem("user", JSON.stringify(user));
+    // setAccessToken(accessToken);
+    // localStorage.setItem("user", JSON.stringify(user));
+     login(user, accessToken);
+
+    if (onSuccess) {
+      onSuccess();
+      return;
+    }
 
     const roleRoutes: Record<string, string> = {
       superadmin: "/superadmin/dashboard",

@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { Baloo_2, Inter, Caveat } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
+import { AuthProvider } from "@/context/AuthContext";
 
 const baloo = Baloo_2({ subsets: ["latin"], variable: "--font-display", weight: ["600", "700"] });
 const inter = Inter({ subsets: ["latin"], variable: "--font-body" });
@@ -40,7 +41,8 @@ export default function RootLayout({
             strategy="beforeInteractive"
           />
         )}
-        {children}</body>
+        <AuthProvider>{children}</AuthProvider>
+        </body>
     </html>
   );
 }
