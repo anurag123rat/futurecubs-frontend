@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import axios from "@/lib/axios";
 import { MessageCircle, X, Send, PawPrint } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
+import { getAccessToken, setAccessToken } from "@/lib/axios";
 import LoginModal from "../../app/login/components/LoginModal";
 
 interface Message {
@@ -12,11 +13,12 @@ interface Message {
 }
 
 export default function ChatWidget() {
+  const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
   const { isLoggedIn, isLoading } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
-    { role: "ai", text: "Namaste! Main FutureCubs assistant hoon. Aapke toddler ke liye activity ideas, milestones, ya kuch bhi poochh sakte hain 🌱" },
+    { role: "ai", text: "Hello! I am the FutureCubs assistant. You can ask about activity ideas, milestones, or anything else for your toddler 🌱" },
   ]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
@@ -27,7 +29,7 @@ export default function ChatWidget() {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
   }, [messages, loading]);
 
-  const handleSend = async () => {
+   const handleSend = async () => {
     const trimmed = input.trim();
     if (!trimmed || loading) return;
 
@@ -36,11 +38,70 @@ export default function ChatWidget() {
     setLoading(true);
     setError("");
 
+    // Placeholder AI message jo progressively fill hoga
+    setMessages((prev) => [...prev, { role: "ai", text: "" }]);
+
+    const sendRequest = async (token: string | null) => {
+      return fetch(`${API_BASE_URL}/api/ai/chat`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        credentials: "include",
+        body: JSON.stringify({ message: trimmed }),
+      });
+    };
+
     try {
-      const res = await axios.post("/ai/chat", { message: trimmed });
-      setMessages((prev) => [...prev, { role: "ai", text: res.data.reply }]);
+      let res = await sendRequest(getAccessToken());
+
+      // If token expires (401), refresh and try again
+      if (res.status === 401) {
+        const refreshRes = await axios.post("/auth/refresh", {}, { withCredentials: true });
+        const newToken = refreshRes.data.accessToken;
+        setAccessToken(newToken);
+        res = await sendRequest(newToken);
+      }
+
+      if (!res.ok || !res.body) {
+        throw new Error("Request failed");
+      }
+
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = "";
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split("\n\n");
+        buffer = lines.pop() || "";
+
+        for (const line of lines) {
+          if (!line.startsWith("data: ")) continue;
+          const jsonStr = line.slice(6);
+          const data = JSON.parse(jsonStr);
+
+          if (data.error) {
+            setError(data.error);
+            continue;
+          }
+
+          if (data.text) {
+            setMessages((prev) => {
+              const updated = [...prev];
+              const lastIdx = updated.length - 1;
+              updated[lastIdx] = { ...updated[lastIdx], text: updated[lastIdx].text + data.text };
+              return updated;
+            });
+          }
+        }
+      }
     } catch (err: any) {
-      setError(err?.response?.data?.error || "An error occured try again later");
+      setError("An error occured try again later");
     } finally {
       setLoading(false);
     }
@@ -54,7 +115,7 @@ export default function ChatWidget() {
           <div className="flex items-center justify-between bg-ink px-5 py-4">
             <div>
               <p className="font-display text-lg font-semibold text-white">FutureCubs Assistant</p>
-              <p className="font-hand text-base text-marigold">aapke chhote cub ke liye 🐻</p>
+              <p className="font-hand text-base text-marigold">For your cub 🐻</p>
             </div>
             <button
               onClick={() => setIsOpen(false)}
@@ -110,7 +171,7 @@ export default function ChatWidget() {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleSend()}
-              placeholder="Apna sawaal likhein..."
+              placeholder="Type your query..."
               className="flex-1 rounded-full bg-sage px-4 py-2 text-sm text-ink outline-none placeholder:text-ink/40"
             />
             <button
