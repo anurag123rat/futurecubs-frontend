@@ -186,28 +186,9 @@ export default function ChatWidget() {
         </div>
       )}
 
-      {/* Toggle bubble */}
-      {/* <button
-        onClick={() => setIsOpen((v) => !v)}
-        className="flex h-14 w-14 items-center justify-center rounded-full bg-marigold text-ink shadow-xl transition hover:scale-105"
-        aria-label="Chat toggle"
-      >
-        {isOpen ? <X size={22} /> : <MessageCircle size={22} />}
-      </button> */}
-      <button
-        onClick={() => {
-          if (isLoading) return;
-          if (!isLoggedIn) {
-            setShowLoginModal(true);
-            return;
-          }
-          setIsOpen((v) => !v);
-        }}
-        className="flex h-14 w-14 items-center justify-center rounded-full bg-marigold text-ink shadow-xl transition hover:scale-105"
-        aria-label="Chat toggle"
-      >
-        {isOpen ? <X size={22} /> : <MessageCircle size={22} />}
-      </button>
+     
+     
+     
 
         {showLoginModal && (
         <LoginModal
