@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
 
+import { useRouter } from "next/navigation";
+
 interface NavLink {
   label: string;
   href: string;
@@ -18,6 +20,7 @@ const NAV_LINKS: NavLink[] = [
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const router = useRouter();
 
   return (
     <header className="sticky top-0 z-50 bg-gradient-to-r from-sky-500 to-indigo-500 shadow-md">
@@ -43,8 +46,10 @@ export default function Navbar() {
 
         {/* CTA button - desktop */}
         <div className="hidden lg:block">
-          <button className="bg-pink-500 hover:bg-pink-600 text-white px-6 py-2.5 rounded-full font-semibold transition">
-            Join Now
+          <button
+           onClick={() => router.push("/login")}    
+          className="bg-pink-500 hover:bg-pink-600 text-white px-6 py-2.5 rounded-full font-semibold transition">
+            Login / Sign Up
           </button>
         </div>
 
@@ -79,10 +84,14 @@ export default function Navbar() {
           ))}
           <li>
             <button
-              onClick={() => setIsOpen(false)}
+              
+               onClick={() => {
+                setIsOpen(false);
+                router.push("/login");
+              }}
               className="w-full bg-pink-500 hover:bg-pink-600 text-white px-6 py-3 rounded-full font-semibold transition"
             >
-              Join Now
+              Login / Sign Up
             </button>
           </li>
         </ul>
