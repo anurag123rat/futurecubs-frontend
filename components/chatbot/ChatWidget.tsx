@@ -10,13 +10,17 @@ import LoginModal from "../../app/login/components/LoginModal";
 interface Message {
   role: "parent" | "ai";
   text: string;
+  sources?: { name: string; age: string }[];
 }
+
+type Mode = "general" | "stories";
 
 export default function ChatWidget() {
   const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
   const { isLoggedIn, isLoading } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const [mode, setMode] = useState<Mode>("general");
   const [messages, setMessages] = useState<Message[]>([
     { role: "ai", text: "Hello! I am the FutureCubs assistant. You can ask about activity ideas, milestones, or anything else for your toddler 🌱" },
   ]);
@@ -28,8 +32,9 @@ export default function ChatWidget() {
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
   }, [messages, loading]);
+  const waitingForFirstToken = loading && messages[messages.length - 1]?.text === "";
 
-   const handleSend = async () => {
+  const handleSend = async () => {
     const trimmed = input.trim();
     if (!trimmed || loading) return;
 
@@ -41,15 +46,19 @@ export default function ChatWidget() {
     // Placeholder AI message jo progressively fill hoga
     setMessages((prev) => [...prev, { role: "ai", text: "" }]);
 
+    const isStories = mode === "stories";
+    const endpoint = isStories ? "/api/rag/ask" : "/api/ai/chat";
+    const payload = isStories ? { question: trimmed } : { message: trimmed };
+
     const sendRequest = async (token: string | null) => {
-      return fetch(`${API_BASE_URL}/api/ai/chat`, {
+      return fetch(`${API_BASE_URL}${endpoint}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
         credentials: "include",
-        body: JSON.stringify({ message: trimmed }),
+        body: JSON.stringify(payload),
       });
     };
 
@@ -64,10 +73,29 @@ export default function ChatWidget() {
         res = await sendRequest(newToken);
       }
 
-      if (!res.ok || !res.body) {
-        throw new Error("Request failed");
+       if (!res.ok) {
+          const errJson = await res.json().catch(() => null);
+          throw new Error(errJson?.message || `Request failed (${res.status})`);
+        }
+        if (!res.body) throw new Error("Empty response");
+
+      // Stories mode: normal JSON response (streaming nahi hai)
+      if (isStories) {
+        const json = await res.json();
+        setMessages((prev) => {
+          const updated = [...prev];
+          const lastIdx = updated.length - 1;
+          updated[lastIdx] = {
+            ...updated[lastIdx],
+            text: json.data.answer,
+            sources: json.data.sources,
+          };
+          return updated;
+        });
+        return; // finally block phir bhi chalega (setLoading(false))
       }
 
+      // General mode: SSE streaming
       const reader = res.body.getReader();
       const decoder = new TextDecoder();
       let buffer = "";
@@ -101,8 +129,14 @@ export default function ChatWidget() {
         }
       }
     } catch (err: any) {
-      setError("An error occured try again later");
-    } finally {
+  setError(err?.message || "An error occured try again later");
+  // khaali AI bubble hata do
+  setMessages((prev) =>
+    prev[prev.length - 1]?.role === "ai" && prev[prev.length - 1].text === ""
+      ? prev.slice(0, -1)
+      : prev
+  );
+} finally {
       setLoading(false);
     }
   };
@@ -126,9 +160,24 @@ export default function ChatWidget() {
             </button>
           </div>
 
+          {/* Mode toggle */}
+          <div className="flex gap-2 border-b border-ink/10 bg-white px-3 py-2">
+            {(["general", "stories"] as const).map((m) => (
+              <button
+                key={m}
+                onClick={() => setMode(m)}
+                className={`flex-1 rounded-full px-3 py-1 text-xs font-semibold transition ${
+                  mode === m ? "bg-teal text-white" : "bg-sage text-ink/70 hover:bg-sage/70"
+                }`}
+              >
+                {m === "general" ? "General" : "Stories"}
+              </button>
+            ))}
+          </div>
+
           {/* Messages */}
           <div ref={scrollRef} className="flex-1 space-y-3 overflow-y-auto px-4 py-4">
-            {messages.map((msg, i) =>
+            {messages.filter((m) => !(m.role === "ai" && m.text === "")).map((msg, i) =>
               msg.role === "parent" ? (
                 <div key={i} className="flex justify-end">
                   <div className="max-w-[80%] rounded-2xl rounded-br-sm bg-marigold px-4 py-2.5 text-sm text-ink">
@@ -140,14 +189,21 @@ export default function ChatWidget() {
                   <div className="mt-1 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-teal text-white">
                     <PawPrint size={14} />
                   </div>
-                  <div className="max-w-[80%] whitespace-pre-wrap rounded-2xl rounded-tl-sm border-2 border-dashed border-teal/40 bg-white px-4 py-2.5 text-sm leading-relaxed text-ink">
-                    {msg.text}
+                  <div className="max-w-[80%]">
+                    <div className="whitespace-pre-wrap rounded-2xl rounded-tl-sm border-2 border-dashed border-teal/40 bg-white px-4 py-2.5 text-sm leading-relaxed text-ink">
+                      {msg.text}
+                    </div>
+                    {msg.sources && msg.sources.length > 0 && (
+                      <p className="mt-1 px-1 text-[11px] text-ink/50">
+                        Stories: {msg.sources.slice(0, 3).map((s) => `${s.name} (${s.age})`).join(", ")}
+                      </p>
+                    )}
                   </div>
                 </div>
               )
             )}
 
-            {loading && (
+            {waitingForFirstToken && (
               <div className="flex items-center gap-2">
                 <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-teal text-white">
                   <PawPrint size={14} />
@@ -171,7 +227,7 @@ export default function ChatWidget() {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleSend()}
-              placeholder="Type your query..."
+              placeholder={mode === "stories" ? "Ask about our cubs' stories..." : "Type your query..."}
               className="flex-1 rounded-full bg-sage px-4 py-2 text-sm text-ink outline-none placeholder:text-ink/40"
             />
             <button
@@ -187,13 +243,6 @@ export default function ChatWidget() {
       )}
 
       {/* Toggle bubble */}
-      {/* <button
-        onClick={() => setIsOpen((v) => !v)}
-        className="flex h-14 w-14 items-center justify-center rounded-full bg-marigold text-ink shadow-xl transition hover:scale-105"
-        aria-label="Chat toggle"
-      >
-        {isOpen ? <X size={22} /> : <MessageCircle size={22} />}
-      </button> */}
       <button
         onClick={() => {
           if (isLoading) return;
@@ -206,11 +255,10 @@ export default function ChatWidget() {
         className="flex h-14 w-14 items-center justify-center rounded-full bg-marigold text-ink shadow-xl transition hover:scale-105"
         aria-label="Chat toggle"
       >
-
         <MessageCircle size={22} />
       </button>
 
-        {showLoginModal && (
+      {showLoginModal && (
         <LoginModal
           onClose={() => setShowLoginModal(false)}
           onSuccess={() => {
